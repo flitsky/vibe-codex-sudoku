@@ -49,3 +49,6 @@ src/
 2. Effects 레이어에 사운드·햅틱 토글 및 색각 보조 테마를 추가해 접근성을 마무리합니다.
 3. React Testing Library 기반 UI 상호작용 테스트를 도입하고 커버리지 지표를 모니터링합니다.
 4. GitHub Actions로 lint/test/빌드 파이프라인을 구성하고 GitHub Pages 자동 배포를 설정합니다.
+
+## 배포
+메인 브랜치로 푸시될 때마다 GitHub Actions가 `npm run build`를 실행하고 결과물을 GitHub Pages에 배포합니다. 워크플로는 `.github/workflows/deploy.yml`에서 확인할 수 있으며, Vite `base` 설정은 레포지토리 경로(`/vibe-codex-sudoku/`)에 맞춰져 있습니다.
