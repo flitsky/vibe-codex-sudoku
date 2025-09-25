@@ -4,9 +4,11 @@ import './ui/global.css'
 import App from './ui/App.jsx'
 import { createGameService } from './application/services/gameService.js'
 import { createMemoryPuzzleRepository } from './infrastructure/memoryPuzzleRepository.js'
+import { createGameStateStorage } from './infrastructure/storage/gameStateStorage.js'
 
 const puzzleRepository = createMemoryPuzzleRepository()
-const gameService = createGameService({ puzzleRepository })
+const persistenceGateway = createGameStateStorage()
+const gameService = createGameService({ puzzleRepository, persistenceGateway })
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

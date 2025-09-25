@@ -1,12 +1,25 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+
+const CELEBRATION_DURATION = 2400
 
 export const useCelebrationEffect = () => {
+  const [isActive, setIsActive] = useState(false)
+  const [triggerCount, setTriggerCount] = useState(0)
+
   const triggerCelebration = useCallback(() => {
-    // Placeholder for celebratory animation or sound effect hooks
-    if (import.meta.env.DEV) {
-      console.info('Celebration effect triggered')
-    }
+    setIsActive(true)
+    setTriggerCount((count) => count + 1)
   }, [])
 
-  return { triggerCelebration }
+  useEffect(() => {
+    if (!isActive) return undefined
+
+    const timeout = window.setTimeout(() => {
+      setIsActive(false)
+    }, CELEBRATION_DURATION)
+
+    return () => window.clearTimeout(timeout)
+  }, [isActive, triggerCount])
+
+  return { isActive, triggerCelebration }
 }

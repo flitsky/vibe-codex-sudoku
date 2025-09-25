@@ -1,24 +1,53 @@
-import { createEmptyBoard } from '../domain/entities/board.js'
+import { PUZZLE_POOL, PUZZLES_BY_ID } from './data/puzzles.js'
 
-const DEFAULT_PUZZLE = () => {
-  const board = createEmptyBoard()
-  board[0][0] = 5
-  board[1][3] = 2
-  board[4][4] = 7
-  board[7][6] = 3
-  return board
+const cloneMatrix = (matrix) => matrix.map((row) => [...row])
+
+const getPoolByDifficulty = (difficulty = 'easy') => {
+  if (difficulty && PUZZLE_POOL[difficulty]) {
+    return {
+      pool: PUZZLE_POOL[difficulty],
+      difficulty,
+    }
+  }
+
+  return {
+    pool: PUZZLE_POOL.easy,
+    difficulty: 'easy',
+  }
+}
+
+const pickRandomPuzzle = (pool) => {
+  const index = Math.floor(Math.random() * pool.length)
+  return pool[index]
 }
 
 export const createMemoryPuzzleRepository = () => {
-  let cachedPuzzle = null
-
   return {
-    async fetchPuzzle() {
-      if (!cachedPuzzle) {
-        cachedPuzzle = DEFAULT_PUZZLE()
-      }
+    async fetchPuzzle({ difficulty } = {}) {
+      const { pool, difficulty: resolvedDifficulty } = getPoolByDifficulty(difficulty)
+      const selected = pickRandomPuzzle(pool)
 
-      return cachedPuzzle
+      return {
+        id: selected.id,
+        difficulty: resolvedDifficulty,
+        puzzle: cloneMatrix(selected.puzzle),
+        solution: cloneMatrix(selected.solution),
+      }
+    },
+    async fetchPuzzleById(id) {
+      if (!id) return null
+      const entry = PUZZLES_BY_ID.get(id)
+      if (!entry) return null
+
+      return {
+        id: entry.id,
+        difficulty: entry.difficulty,
+        puzzle: cloneMatrix(entry.puzzle),
+        solution: cloneMatrix(entry.solution),
+      }
+    },
+    listDifficulties() {
+      return Object.keys(PUZZLE_POOL)
     },
   }
 }
